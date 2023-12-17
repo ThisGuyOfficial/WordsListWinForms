@@ -6,6 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Text;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace wf
 {
@@ -219,9 +220,19 @@ namespace wf
             this.Resize += new System.EventHandler(this.Form1_Resize);
         }
 
+
+        
+
         async private void mainTask_Click(object sender, EventArgs e)
         {
-            IntPtr a = mainTaskCreate();
+
+
+            //using (var fstream = File.CreateText("WordsList.txt"))
+            //{
+            //    fstream.Write(tB1.Text);
+            //}
+            if (File.Exists("WordsList.txt")) File.Delete("WordsList.txt");
+            if (File.Exists("ResultPairs.txt")) File.Delete("ResultPairs.txt");
 
             FileStream fstream = new FileStream("WordsList.txt", FileMode.Create);
             try
@@ -239,31 +250,38 @@ namespace wf
                 fstream.Close();
             }
 
-            mainTaskRead(a);
-            mainTaskCountMatches(a);
-            mainTaskSave(a);
+            tB1.Text = "Содержимое файла обработано, результат сохранен в файл ResultPairs.txt";
+            tB1.AppendText(Environment.NewLine);
+
+
+           // Thread.Sleep(5000);
+
+            
+                IntPtr a = mainTaskCreate();
+                mainTaskRead(a);
+                mainTaskCountMatches(a);
+                mainTaskSave(a);
+            
 
             //System.IO.File.Delete("WordsList.txt");
 
             //tB1.Clear();
-            tB1.Text = "Содержимое файла обработано, результат сохранен в файл ResultPairs.txt";
-            tB1.AppendText(Environment.NewLine);
-
-            FileStream fstream0 = new FileStream("ResultPairs.txt", FileMode.Open);
-            try
-            {
-                byte[] buffer = new byte[fstream0.Length];
-                await fstream0.ReadAsync(buffer, 0, buffer.Length);
-                this.tB1.Text += Encoding.Default.GetString(buffer);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
-            }
-            finally
-            {
-                fstream0.Close();
-            }
+            
+            //FileStream fstream0 = new FileStream("ResultPairs.txt", FileMode.Open);
+            //try
+            //{
+            //    byte[] buffer = new byte[fstream0.Length];
+            //    await fstream0.ReadAsync(buffer, 0, buffer.Length);
+            //    this.tB1.Text += Encoding.Default.GetString(buffer);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+            //}
+            //finally
+            //{
+            //    fstream0.Close();
+            //}
 
 
         }
